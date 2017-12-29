@@ -38286,6 +38286,15 @@ var AuthorActions = {
             actionTypes: ActionTypes.CREATE_AUTHOR,
             author: newAuthor
         });
+    },
+
+    updateAuthor: function(author){
+        var updaterAuthor = AuthorApi.saveAuthor(author);
+
+        Dispatcher.dispatch({
+            actionTypes: ActionTypes.UPDATE_AUTHOR,
+            author: updaterAuthor
+        });
     }
 };
 
@@ -38639,7 +38648,12 @@ var ManageAuthorPage = React.createClass({displayName: "ManageAuthorPage",
             return;
         }
 
-        AuthorActions.createAuthor(this.state.author);
+        if(this.state.author.id){
+            AuthorActions.updateAuthor(this.state.author);
+        } else {
+            AuthorActions.createAuthor(this.state.author);
+        }
+        
         this.setState({dirty: false});
         toastr.success('Author saved.');
         this.transitionTo('authors');
@@ -38756,7 +38770,8 @@ var keyMirror = require('react/lib/keyMirror');
 
 module.exports = keyMirror({ 
     INITIALIZE: null,
-    CREATE_AUTHOR: null
+    CREATE_AUTHOR: null,
+    UPDATE_AUTHOR: null
 });
 
 },{"react/lib/keyMirror":190}],221:[function(require,module,exports){
@@ -38812,7 +38827,7 @@ var Dispatcher = require('../dispatcher/appDispatcher');
 var ActionTypes = require('../constants/actionTypes');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
-var _ = require('object-assign');
+var _ = require('lodash');
 var CHANGE_EVENT = 'change';
 
 var _author = [];
@@ -38847,6 +38862,12 @@ Dispatcher.register(function(action){
             _author.push(action.author);
             AuthorStore.emitChange();
             break;
+        case ActionTypes.UPDATE_AUTHOR:
+            var existingAuthor = _.find(_author, {id: action.author.id});
+            var existingAuthorIndex = _.indexOf(_author, existingAuthor);
+            _author.splice(existingAuthorIndex, 1, action.author);
+            AuthorStore.emitChange();
+            break;
             default:
             //no option
     }
@@ -38854,4 +38875,4 @@ Dispatcher.register(function(action){
 
 module.exports = AuthorStore;
 
-},{"../constants/actionTypes":220,"../dispatcher/appDispatcher":221,"events":2,"object-assign":9}]},{},[222]);
+},{"../constants/actionTypes":220,"../dispatcher/appDispatcher":221,"events":2,"lodash":8,"object-assign":9}]},{},[222]);

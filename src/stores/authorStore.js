@@ -4,7 +4,7 @@ var Dispatcher = require('../dispatcher/appDispatcher');
 var ActionTypes = require('../constants/actionTypes');
 var EventEmitter = require('events').EventEmitter;
 var assign = require('object-assign');
-var _ = require('object-assign');
+var _ = require('lodash');
 var CHANGE_EVENT = 'change';
 
 var _author = [];
@@ -37,6 +37,12 @@ Dispatcher.register(function(action){
             break;
         case ActionTypes.CREATE_AUTHOR:
             _author.push(action.author);
+            AuthorStore.emitChange();
+            break;
+        case ActionTypes.UPDATE_AUTHOR:
+            var existingAuthor = _.find(_author, {id: action.author.id});
+            var existingAuthorIndex = _.indexOf(_author, existingAuthor);
+            _author.splice(existingAuthorIndex, 1, action.author);
             AuthorStore.emitChange();
             break;
             default:

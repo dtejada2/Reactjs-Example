@@ -13,6 +13,15 @@ var AuthorActions = {
             actionTypes: ActionTypes.CREATE_AUTHOR,
             author: newAuthor
         });
+    },
+
+    updateAuthor: function(author){
+        var updaterAuthor = AuthorApi.saveAuthor(author);
+
+        Dispatcher.dispatch({
+            actionTypes: ActionTypes.UPDATE_AUTHOR,
+            author: updaterAuthor
+        });
     }
 };
 
