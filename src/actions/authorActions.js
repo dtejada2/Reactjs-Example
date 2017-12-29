@@ -10,7 +10,7 @@ var AuthorActions = {
 
         //Hey dispatcher, go tell all the stores that an author was just created.
         Dispatcher.dispatch({
-            actionType: ActionTypes.CREATE_AUTHOR,
+            actionTypes: ActionTypes.CREATE_AUTHOR,
             author: newAuthor
         });
     }
